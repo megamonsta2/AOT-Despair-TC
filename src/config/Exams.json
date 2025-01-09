@@ -1,0 +1,23 @@
+{
+  "Knowledge": {
+    "MAX": 50
+  },
+  "BonusPoints": {
+    "MAX": 10
+  },
+
+  "Dummies": {
+    "MAX": 20
+  },
+  "Speed": {
+    "MAX": 20,
+    "SECONDS_UPPER": 40,
+    "SECONDS_LOWER": 20
+  },
+  "Obby": {
+    "MAX": 10
+  },
+  "PASS": 60,
+  "TOP": 90,
+  "TOP_LIMIT": 10
+}

@@ -1,0 +1,38 @@
+{
+  "RAW": {
+    "SHEET_ID": "1LRXwIcf5PbtzLPDS2MWCP-IVR3B__vXcb63Nhixy_ww",
+    "START_ROW": 2,
+    "NAME_COLUMN": "B",
+    "SCORE_COLUMN": "C",
+    "SHEETS": {
+      "Dummies": "DUMMIES",
+      "Speed": "SPEED",
+      "Obby": "OBBY",
+      "BonusPoints": "BP"
+    },
+
+    "Knowledge": {
+      "SCORE_COLUMN": "B",
+      "NAME_COLUMN": "C",
+      "SHEET": "KNOWLEDGE"
+    }
+  },
+
+  "PARSED": {
+    "SHEET_ID": "1ZV86i_IKpIAc6-uJcUSaxPn7BzIBuiTAkCf5GuzNfcQ",
+    "DEFAULT_SHEET": "Class DEFAULT",
+    "CLASS_NUMBER_CELL": "B3",
+    "START_ROW": 5,
+    "END_ROW": 499,
+
+    "COLUMNS": {
+      "Username": "C",
+      "Knowledge": "G",
+      "BonusPoints": "I",
+      "Dummies": "M",
+      "Speed": "O",
+      "Obby": "Q",
+      "Display": "S"
+    }
+  }
+}
