@@ -90,23 +90,19 @@ export async function CloneSheet(
     return false;
   }
 
-  await BatchUpdate(id, [
-    {
-      duplicateSheet: {
-        sourceSheetId: sheetId,
-        newSheetName: newSheet,
-      },
-    },
-  ]);
-
-  return true;
-}
-
-function BatchUpdate(id: string, requests: sheets_v4.Schema$Request[]) {
-  return sheets.spreadsheets.batchUpdate({
+  sheets.spreadsheets.batchUpdate({
     spreadsheetId: id,
     requestBody: {
-      requests,
+      requests: [
+        {
+          duplicateSheet: {
+            sourceSheetId: sheetId,
+            newSheetName: newSheet,
+          },
+        },
+      ],
     },
   });
+
+  return true;
 }

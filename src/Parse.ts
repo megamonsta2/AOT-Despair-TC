@@ -9,7 +9,7 @@ import {
   PARSED_FOLDER,
 } from "./config/Paths.js";
 
-import Player from "./classes/Player.js";
+import Player from "./utils/Player.js";
 import { SerialisedPlayer } from "./utils/Types.js";
 import { ReadFile } from "./Files.js";
 import { AddError, DisplayErrors, Errored } from "./utils/Error.js";
