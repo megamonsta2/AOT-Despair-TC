@@ -1,8 +1,14 @@
 import { join } from "path";
+import clipboard from "clipboardy";
 
-import sheetsData from "./config/Sheets.json" with { type: "json" };
-import paths from "./config/Paths.json" with { type: "json" };
-import exams from "./config/Exams.json" with { type: "json" };
+import { PARSED_FOLDER, PARSED_FILES } from "./config/Paths.js";
+import {
+  PARSED_SHEET,
+  PARSED_SHEET_ID,
+  PARSED_CELL_DATA,
+  PARSED_COLUMN_DATA,
+} from "./config/Sheets.js";
+import { PASS_RATE, TOP_CADET_DATA } from "./config/Exams.js";
 
 import { ReadFile } from "./Files.js";
 import input from "./utils/Input.js";
@@ -13,13 +19,6 @@ import {
   CloneSheet,
 } from "./utils/Sheets.js";
 import { SerialisedPlayer, PlayerField, ValueRange } from "./utils/Types.js";
-import clipboard from "clipboardy";
-
-const parsedSheetsData = sheetsData.PARSED;
-const sheet_id = parsedSheetsData.SHEET_ID;
-const columns = parsedSheetsData.COLUMNS;
-const start_row = parsedSheetsData.START_ROW;
-const end_row = parsedSheetsData.END_ROW;
 
 const displayPattern = /.+ - ([0-9]+) \(.+ K \| .+ P | .+ B\)/;
 
@@ -29,8 +28,8 @@ export default async function main() {
     const sheet_name = `Class ${ClassNumber}`;
 
     const cloneSuccess = await CloneSheet(
-      sheet_id,
-      parsedSheetsData.DEFAULT_SHEET,
+      PARSED_SHEET_ID,
+      PARSED_SHEET,
       sheet_name,
     );
     if (!cloneSuccess) {
@@ -55,11 +54,11 @@ export default async function main() {
       GetValues(sheet_name, parsedPlayers, "Obby"),
     ];
 
-    await SetSheetData(sheet_id, ranges);
+    await SetSheetData(PARSED_SHEET_ID, ranges);
     console.log("Posted successfully!");
 
-    const DisplayData = await GetSheetData(sheet_id, [
-      `${sheet_name}!${columns.Display}${start_row}:${columns.Display}${end_row}`,
+    const DisplayData = await GetSheetData(PARSED_SHEET_ID, [
+      `${sheet_name}!${PARSED_COLUMN_DATA.Display}${PARSED_CELL_DATA.START_ROW}:${PARSED_COLUMN_DATA.Display}${PARSED_CELL_DATA.END_ROW}`,
     ]);
     if (!DisplayData) return;
 
@@ -75,7 +74,7 @@ export default async function main() {
 
 async function GetClassNumber(): Promise<number> {
   while (true) {
-    const sheets = await GetSheets(sheet_id);
+    const sheets = await GetSheets(PARSED_SHEET_ID);
     const response = await input("What class is it? ");
 
     const classNum = Number(response);
@@ -95,7 +94,7 @@ async function GetClassNumber(): Promise<number> {
 }
 
 async function ReadParsedFile(): Promise<SerialisedPlayer[]> {
-  const path = join(".", paths.ParsedFolder, paths.Parsed.Valid);
+  const path = join(".", PARSED_FOLDER, PARSED_FILES.Valid);
   return JSON.parse(await ReadFile(path));
 }
 
@@ -117,7 +116,7 @@ function GetValues(
   });
 
   return {
-    range: `${sheet_name}!${columns[field]}${start_row}:${columns[field]}${end_row}`,
+    range: `${sheet_name}!${PARSED_COLUMN_DATA[field]}${PARSED_CELL_DATA.START_ROW}:${PARSED_COLUMN_DATA[field]}${PARSED_CELL_DATA.END_ROW}`,
     values: values,
   };
 }
@@ -151,9 +150,12 @@ async function SortDisplay(display: string[][]) {
 
     for (const player of Scores) Array.push(player);
 
-    if (i < exams.PASS) {
+    if (i < PASS_RATE) {
       Array = Failures;
-    } else if (TopCadets.length >= exams.TOP_LIMIT || i < exams.TOP) {
+    } else if (
+      TopCadets.length >= TOP_CADET_DATA.LIMIT ||
+      i < TOP_CADET_DATA.POINT_REQ
+    ) {
       Array = Graduates;
     } else {
       Array = TopCadets;

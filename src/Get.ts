@@ -1,24 +1,21 @@
-import { sheets_v4 } from "googleapis";
 import { writeFile } from "fs/promises";
 import { join } from "path";
 
-import sheetsData from "./config/Sheets.json" with { type: "json" };
-import files from "./config/Paths.json" with { type: "json" };
+import { INPUT_FOLDER, INPUT_FILES } from "./config/Paths.js";
+import {
+  RAW_SHEET_ID,
+  RAW_SHEET_NAMES,
+  RAW_CELL_DATA,
+  RAW_KNOWLEDGE_CELL_DATA,
+} from "./config/Sheets.js";
 
 import { GetSheetData } from "./utils/Sheets.js";
-import { RawSheet } from "./utils/Types.js";
+import { Exam, ValueRange } from "./utils/Types.js";
 
-const knowledgeFile = files.Inputs.Knowledge;
-const InputFiles = {
-  KNOWLEDGE: knowledgeFile,
-  DUMMIES: files.Inputs.Dummies,
-  SPEED: files.Inputs.Speed,
-  OBBY: files.Inputs.Obby,
-  BP: files.Inputs.BonusPoints,
-} as { [key: string]: string };
+const knowledgeFile = INPUT_FILES.Knowledge;
 
 export default async function GetRawData() {
-  const response = await GetSheetData(sheetsData.RAW.SHEET_ID, GetRawRanges());
+  const response = await GetSheetData(RAW_SHEET_ID, GetRawRanges());
   if (!response) {
     console.warn(
       "The response when getting raw data from the sheet was invalid!",
@@ -36,25 +33,23 @@ export default async function GetRawData() {
 }
 
 function GetRawRanges(): string[] {
-  const RawData = sheetsData.RAW;
-  const column = RawData.SCORE_COLUMN;
-  const range = `${column}${RawData.START_ROW}:${column}`;
+  const column = RAW_CELL_DATA.SCORE_COLUMN;
+  const range = `${column}${RAW_CELL_DATA.START_ROW}:${column}`;
   const ranges: string[] = [];
 
-  for (const key in RawSheet) {
+  for (const key of Object.values(RAW_SHEET_NAMES)) {
     ranges.push(`${key}!${range}`); // E.g. DUMMIES!C2:C
   }
 
   // Knowledge
-  const KnowledgeData = RawData.Knowledge;
   ranges.push(
-    `${KnowledgeData.SHEET}!${KnowledgeData.SCORE_COLUMN}${RawData.START_ROW}:${KnowledgeData.NAME_COLUMN}`,
+    `${RAW_SHEET_NAMES.Knowledge}!${RAW_KNOWLEDGE_CELL_DATA.SCORE_COLUMN}${RAW_CELL_DATA.START_ROW}:${RAW_KNOWLEDGE_CELL_DATA.NAME_COLUMN}`,
   );
 
   return ranges;
 }
 
-async function WriteRawData(data: sheets_v4.Schema$ValueRange) {
+async function WriteRawData(data: ValueRange) {
   const range = data.range;
   if (!range) return;
 
@@ -69,10 +64,7 @@ async function WriteRawData(data: sheets_v4.Schema$ValueRange) {
   }
 
   if (fileName == knowledgeFile) {
-    return writeFile(
-      join(files.InputFolder, knowledgeFile),
-      JSON.stringify(values),
-    );
+    return writeFile(join(INPUT_FOLDER, knowledgeFile), JSON.stringify(values));
   } else {
     // Parse scores
     const parsedValues: string[] = [];
@@ -82,7 +74,7 @@ async function WriteRawData(data: sheets_v4.Schema$ValueRange) {
     }
 
     return writeFile(
-      join(files.InputFolder, fileName),
+      join(INPUT_FOLDER, fileName),
       JSON.stringify(parsedValues),
     );
   }
@@ -90,5 +82,16 @@ async function WriteRawData(data: sheets_v4.Schema$ValueRange) {
 
 function GetFileName(range: string) {
   const sheetName = range.substring(0, range.indexOf("!"));
-  return InputFiles[sheetName];
+
+  if (sheetName == RAW_SHEET_NAMES.Knowledge) {
+    return INPUT_FILES.Knowledge;
+  }
+
+  for (const [currentExam, currentSheet] of Object.entries(RAW_SHEET_NAMES)) {
+    if (sheetName == currentSheet) {
+      return INPUT_FILES[currentExam as Exam];
+    }
+  }
+
+  return INPUT_FILES.BonusPoints;
 }

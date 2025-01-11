@@ -1,6 +1,12 @@
 import { readdir, unlink, writeFile, readFile } from "fs/promises";
-import paths from "./config/Paths.json" with { type: "json" };
 import { join } from "path";
+
+import {
+  INPUT_FOLDER,
+  INPUT_FILES,
+  PARSED_FOLDER,
+  PARSED_FILES,
+} from "./config/Paths.js";
 
 export function ReadFile(path: string) {
   return readFile(path, "utf-8");
@@ -8,15 +14,12 @@ export function ReadFile(path: string) {
 
 export default async function ResetFiles() {
   // Delete existing files
-  await Promise.all([
-    RemoveFiles(paths.InputFolder),
-    RemoveFiles(paths.ParsedFolder),
-  ]);
+  await Promise.all([RemoveFiles(INPUT_FOLDER), RemoveFiles(PARSED_FOLDER)]);
 
   // Create new files
   await Promise.all([
-    CreateFiles(paths.InputFolder, paths.Inputs),
-    CreateFiles(paths.ParsedFolder, paths.Parsed),
+    CreateFiles(INPUT_FOLDER, INPUT_FILES),
+    CreateFiles(PARSED_FOLDER, PARSED_FILES),
   ]);
 
   console.log("Reset files!");

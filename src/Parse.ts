@@ -1,8 +1,13 @@
 import { join } from "path";
 import { writeFile } from "fs/promises";
 
-import exams from "./config/Exams.json" with { type: "json" };
-import paths from "./config/Paths.json" with { type: "json" };
+import { MAX_SCORE, SPEED_TIMES } from "./config/Exams.js";
+import {
+  INPUT_FILES,
+  INPUT_FOLDER,
+  PARSED_FILES,
+  PARSED_FOLDER,
+} from "./config/Paths.js";
 
 import Player from "./classes/Player.js";
 import { SerialisedPlayer } from "./utils/Types.js";
@@ -97,7 +102,7 @@ export default async function main() {
 // Usernames
 async function ParseUsernames() {
   const Promises: Promise<void>[] = [];
-  const raw: DefaultInput = await ReadInputFile(paths.Inputs.Usernames);
+  const raw: DefaultInput = await ReadInputFile(INPUT_FILES.Username);
 
   for (const username of raw) {
     Promises.push(
@@ -116,7 +121,7 @@ async function ParseUsernames() {
 
 // Knowledge
 async function ParseKnowledge() {
-  const raw: KnowledgeInput = await ReadInputFile(paths.Inputs.Knowledge);
+  const raw: KnowledgeInput = await ReadInputFile(INPUT_FILES.Knowledge);
   const Promises: Promise<void>[] = [];
 
   for (const data of raw) {
@@ -158,7 +163,7 @@ function ParseKnowledgeScore(username: string, raw: string): number | void {
   if (
     isNaN(ParsedScore) ||
     ParsedScore < 0 ||
-    ParsedScore > exams.Knowledge.MAX
+    ParsedScore > MAX_SCORE.Knowledge
   ) {
     AddError("Knowledge", `"${ParsedScore}" is out of bounds!`);
     return;
@@ -169,7 +174,7 @@ function ParseKnowledgeScore(username: string, raw: string): number | void {
 
 // Dummies
 async function ParseDummies() {
-  const raw: DefaultInput = await ReadInputFile(paths.Inputs.Dummies);
+  const raw: DefaultInput = await ReadInputFile(INPUT_FILES.Dummies);
   const Promises: Promise<void>[] = [];
 
   for (const set of raw) {
@@ -223,7 +228,7 @@ function ParseDummiesSet(data: string): Promise<void> {
 }
 
 function ParseDummiesScore(kills: number): number {
-  const max = exams.Dummies.MAX;
+  const max = MAX_SCORE.Dummies;
 
   if (kills > max) {
     return max;
@@ -234,7 +239,7 @@ function ParseDummiesScore(kills: number): number {
 
 // Speed
 async function ParseSpeed() {
-  const raw: DefaultInput = await ReadInputFile(paths.Inputs.Speed);
+  const raw: DefaultInput = await ReadInputFile(INPUT_FILES.Speed);
   const Promises: Promise<void>[] = [];
 
   for (const set of raw) {
@@ -278,18 +283,18 @@ function ParseSpeedPlayer(line: string): Promise<void> {
 }
 
 function ParseSpeedScore(secs: number): number {
-  if (secs <= exams.Speed.SECONDS_LOWER) {
-    return exams.Speed.MAX;
-  } else if (secs >= exams.Speed.SECONDS_UPPER) {
+  if (secs <= SPEED_TIMES.Lower) {
+    return MAX_SCORE.Speed;
+  } else if (secs >= SPEED_TIMES.Upper) {
     return 0;
   } else {
-    return exams.Speed.SECONDS_UPPER - secs;
+    return SPEED_TIMES.Upper - secs;
   }
 }
 
 // Obby
 async function ParseObby() {
-  const raw: DefaultInput = await ReadInputFile(paths.Inputs.Obby);
+  const raw: DefaultInput = await ReadInputFile(INPUT_FILES.Obby);
   const Promises: Promise<void>[] = [];
 
   for (const set of raw) {
@@ -363,7 +368,7 @@ function ParseObbyScore(
 
 // Speed
 async function ParseBP() {
-  const raw: DefaultInput = await ReadInputFile(paths.Inputs.BonusPoints);
+  const raw: DefaultInput = await ReadInputFile(INPUT_FILES.BonusPoints);
   const Promises: Promise<void>[] = [];
 
   for (const set of raw) {
@@ -444,7 +449,7 @@ function GetPlayer(username: string): Player {
 }
 
 async function ReadInputFile(file: string) {
-  const raw = await ReadFile(join(paths.InputFolder, file));
+  const raw = await ReadFile(join(INPUT_FOLDER, file));
   if (raw === "") {
     return "";
   } else {
@@ -456,8 +461,8 @@ function WritePlayersToFile() {
   const ValidData: SerialisedPlayer[] = [];
   const InvalidData: SerialisedPlayer[] = [];
 
-  const ValidPath = join(paths.ParsedFolder, paths.Parsed.Valid);
-  const InvalidPath = join(paths.ParsedFolder, paths.Parsed.Invalid);
+  const ValidPath = join(PARSED_FOLDER, PARSED_FILES.Valid);
+  const InvalidPath = join(PARSED_FOLDER, PARSED_FILES.Invalid);
 
   for (const Player of ValidPlayers.values()) {
     ValidData.push(Player.Serialise());
