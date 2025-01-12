@@ -42,6 +42,7 @@ export default class Input {
       const responseData = this.Options[response];
       if (!responseData) {
         console.warn("Invalid, enter another key.");
+        continue;
       }
 
       await responseData.Function();
