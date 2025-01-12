@@ -1,4 +1,4 @@
-import { PlayerField } from "../utils/Types.js";
+import { PlayerField } from "../../utils/Types.js";
 
 export const INPUT_FOLDER = "inputs";
 export const PARSED_FOLDER = "parsed";

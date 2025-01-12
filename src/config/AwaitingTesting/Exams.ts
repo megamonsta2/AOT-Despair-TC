@@ -1,4 +1,4 @@
-import { Exam } from "../utils/Types.js";
+import { Exam } from "../../utils/Types.js";
 
 export const MAX_SCORE: { [key in Exam]: number } = {
   Knowledge: 50,

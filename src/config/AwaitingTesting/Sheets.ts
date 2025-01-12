@@ -1,4 +1,4 @@
-import { Exam, PlayerField } from "../utils/Types.js";
+import { Exam, PlayerField } from "../../utils/Types.js";
 
 export const RAW_SHEET_ID = "1LRXwIcf5PbtzLPDS2MWCP-IVR3B__vXcb63Nhixy_ww";
 export const RAW_SHEET_NAMES: { [key in Exam]: string } = {

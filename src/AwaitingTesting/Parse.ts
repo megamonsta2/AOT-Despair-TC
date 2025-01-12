@@ -1,18 +1,18 @@
 import { join } from "path";
 import { writeFile } from "fs/promises";
 
-import { MAX_SCORE, SPEED_TIMES } from "./config/Exams.js";
+import { MAX_SCORE, SPEED_TIMES } from "../config/AwaitingTesting/Exams.js";
 import {
   INPUT_FILES,
   INPUT_FOLDER,
   PARSED_FILES,
   PARSED_FOLDER,
-} from "./config/Paths.js";
+} from "../config/AwaitingTesting/Paths.js";
 
-import Player from "./utils/Player.js";
-import { SerialisedPlayer } from "./utils/Types.js";
+import Player from "./Player.js";
 import { ReadFile } from "./Files.js";
-import { AddError, DisplayErrors, Errored } from "./utils/Error.js";
+import { SerialisedPlayer } from "../utils/Types.js";
+import { AddError, DisplayErrors, Errored } from "../utils/Error.js";
 
 /*
 

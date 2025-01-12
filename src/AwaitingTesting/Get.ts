@@ -1,16 +1,16 @@
 import { writeFile } from "fs/promises";
 import { join } from "path";
 
-import { INPUT_FOLDER, INPUT_FILES } from "./config/Paths.js";
+import { INPUT_FOLDER, INPUT_FILES } from "../config/AwaitingTesting/Paths.js";
 import {
   RAW_SHEET_ID,
   RAW_SHEET_NAMES,
   RAW_CELL_DATA,
   RAW_KNOWLEDGE_CELL_DATA,
-} from "./config/Sheets.js";
+} from "../config/AwaitingTesting/Sheets.js";
 
-import { GetSheetData } from "./utils/Sheets.js";
-import { Exam, ValueRange } from "./utils/Types.js";
+import { GetSheetData } from "../utils/Sheets.js";
+import { Exam, ValueRange } from "../utils/Types.js";
 
 const knowledgeFile = INPUT_FILES.Knowledge;
 

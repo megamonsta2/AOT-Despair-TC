@@ -6,7 +6,7 @@ import {
   INPUT_FILES,
   PARSED_FOLDER,
   PARSED_FILES,
-} from "./config/Paths.js";
+} from "../config/AwaitingTesting/Paths.js";
 
 export function ReadFile(path: string) {
   return readFile(path, "utf-8");

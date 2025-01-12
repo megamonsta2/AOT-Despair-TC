@@ -1,4 +1,4 @@
-import input from "../utils/Input.js";
+import { getInput } from "../utils/Input.js";
 
 const Errors: Map<string, string[]> = new Map();
 let HasErrored = false;
@@ -28,7 +28,7 @@ export function DisplayErrors() {
   HasErrored = false;
 
   console.warn("Press enter when resolved!");
-  return input("");
+  return getInput("");
 }
 
 export function Errored() {

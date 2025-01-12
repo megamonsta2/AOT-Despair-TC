@@ -1,24 +1,27 @@
 import { join } from "path";
 import clipboard from "clipboardy";
 
-import { PARSED_FOLDER, PARSED_FILES } from "./config/Paths.js";
+import {
+  PARSED_FOLDER,
+  PARSED_FILES,
+} from "../config/AwaitingTesting/Paths.js";
 import {
   PARSED_SHEET,
   PARSED_SHEET_ID,
   PARSED_CELL_DATA,
   PARSED_COLUMN_DATA,
-} from "./config/Sheets.js";
-import { PASS_RATE, TOP_CADET_DATA } from "./config/Exams.js";
+} from "../config/AwaitingTesting/Sheets.js";
+import { PASS_RATE, TOP_CADET_DATA } from "../config/AwaitingTesting/Exams.js";
 
 import { ReadFile } from "./Files.js";
-import input from "./utils/Input.js";
+import { getInput } from "../utils/Input.js";
 import {
   GetSheets,
   GetSheetData,
   SetSheetData,
   CloneSheet,
-} from "./utils/Sheets.js";
-import { SerialisedPlayer, PlayerField, ValueRange } from "./utils/Types.js";
+} from "../utils/Sheets.js";
+import { SerialisedPlayer, PlayerField, ValueRange } from "../utils/Types.js";
 
 const displayPattern = /.+ - ([0-9]+) \(.+ K \| .+ P | .+ B\)/;
 
@@ -75,7 +78,7 @@ export default async function main() {
 async function GetClassNumber(): Promise<number> {
   while (true) {
     const sheets = await GetSheets(PARSED_SHEET_ID);
-    const response = await input("What class is it? ");
+    const response = await getInput("What class is it? ");
 
     const classNum = Number(response);
     if (

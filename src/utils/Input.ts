@@ -1,6 +1,7 @@
 import { createInterface } from "readline";
+import { InputOptions } from "./Types.js";
 
-export default function input(query: string): Promise<string> {
+export function getInput(query: string): Promise<string> {
   const readlineInterface = createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -12,4 +13,34 @@ export default function input(query: string): Promise<string> {
       resolve(answer);
     });
   });
+}
+
+export default class Input {
+  Options: InputOptions;
+
+  constructor(Options: InputOptions) {
+    this.Options = Options;
+  }
+
+  async run() {
+    while (true) {
+      console.log("Pick what to do!");
+      for (const [key, value] of Object.entries(this.Options)) {
+        console.log(`${key}: ${value.Name}`);
+      }
+
+      const response = (await getInput("")).toLowerCase();
+      if (response === "q") {
+        return;
+      }
+
+      const responseData = this.Options[response];
+      if (!responseData) {
+        console.warn("Invalid, enter another key.");
+      }
+
+      await responseData.Function();
+      console.log("");
+    }
+  }
 }

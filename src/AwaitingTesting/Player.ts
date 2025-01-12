@@ -1,4 +1,4 @@
-import exams from "../config/Exams.json" with { type: "json" };
+import { MAX_SCORE } from "../config/AwaitingTesting/Exams.js";
 import { SerialisedPlayer } from "../utils/Types.js";
 
 export default class Player {
@@ -28,8 +28,8 @@ export default class Player {
       this.BonusPoints += points;
     }
 
-    if (this.BonusPoints > exams.BonusPoints.MAX) {
-      this.BonusPoints = exams.BonusPoints.MAX;
+    if (this.BonusPoints > MAX_SCORE.BonusPoints) {
+      this.BonusPoints = MAX_SCORE.BonusPoints;
     }
   }
 
