@@ -20,6 +20,11 @@ export default class Input {
 
   constructor(Options: InputOptions) {
     this.Options = Options;
+
+    this.Options.q = {
+      Name: "Quit",
+      Function: async () => {},
+    };
   }
 
   async run() {
