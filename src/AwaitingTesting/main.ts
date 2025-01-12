@@ -23,4 +23,6 @@ const inputData = new input({
   },
 });
 
-export default inputData.run;
+export default async function () {
+  await inputData.run();
+}
