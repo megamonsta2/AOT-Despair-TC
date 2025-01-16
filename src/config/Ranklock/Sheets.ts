@@ -22,6 +22,12 @@ export const RAW_CELL_DATA = {
 
 export const PARSED_SHEET_NAME = "DATA";
 export const PARSED_CELL_DATA = {
+  INDEXES: {
+    USERNAME: 0,
+    START_DATE: 4,
+    END_DATE: 5,
+  },
+
   START_COLUMN: "B",
   END_COLUMN: "G",
   START_ROW: 6,

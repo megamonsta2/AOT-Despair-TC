@@ -24,15 +24,16 @@ export type RanklockField =
   | "START_DATE"
   | "END_DATE"
   | "APPROVED";
-
 export type RawRequestRow = SheetBool | undefined;
 export type SheetBool = "TRUE" | "FALSE";
 
 export type RawRanklockData = [string, string, string, string, string, string];
-export interface ParsedRanklockData {
+export interface ComparisonRanklockData {
+  Start: Date;
+  End: Date;
+}
+export interface ParsedRanklockData extends ComparisonRanklockData {
   Username: string;
   Reason: string;
   Evidence: string;
-  Start: Date;
-  End: Date;
 }
