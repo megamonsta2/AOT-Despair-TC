@@ -1,7 +1,7 @@
 import { google } from "googleapis";
 
 import credentials from "../config/SheetCredentials.json" with { type: "json" };
-import { ValueRange } from "./Types.js";
+import { SheetBool, ValueRange } from "./Types.js";
 
 const auth = new google.auth.JWT(
   credentials.client_email,
@@ -105,4 +105,8 @@ export async function CloneSheet(
   });
 
   return true;
+}
+
+export function ParseSheetBool(x: SheetBool) {
+  return x == "TRUE";
 }

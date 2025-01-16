@@ -16,3 +16,23 @@ export type SerialisedPlayer = {
 } & {
   [key in Exam]: number | undefined;
 };
+
+export type RanklockField =
+  | "USERNAME"
+  | "REASON"
+  | "EVIDENCE"
+  | "START_DATE"
+  | "END_DATE"
+  | "APPROVED";
+
+export type RawRequestRow = SheetBool | undefined;
+export type SheetBool = "TRUE" | "FALSE";
+
+export type RawRanklockData = [string, string, string, string, string, string];
+export interface ParsedRanklockData {
+  Username: string;
+  Reason: string;
+  Evidence: string;
+  Start: Date;
+  End: Date;
+}
