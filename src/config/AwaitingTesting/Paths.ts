@@ -1,6 +1,6 @@
 import { PlayerField } from "../../utils/Types.js";
 
-export const INPUT_FOLDER = "inputs";
+export const INPUT_FOLDER = "inputs/AwaitingTesting";
 export const PARSED_FOLDER = "parsed";
 
 export const INPUT_FILES: { [key in PlayerField]: string } = {
