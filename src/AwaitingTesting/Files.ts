@@ -1,4 +1,4 @@
-import { readdir, unlink, writeFile, readFile } from "fs/promises";
+import { readdir, unlink, writeFile } from "fs/promises";
 import { join } from "path";
 
 import {
@@ -7,10 +7,6 @@ import {
   PARSED_FOLDER,
   PARSED_FILES,
 } from "../config/AwaitingTesting/Paths.js";
-
-export function ReadFile(path: string) {
-  return readFile(path, "utf-8");
-}
 
 export default async function ResetFiles() {
   // Delete existing files

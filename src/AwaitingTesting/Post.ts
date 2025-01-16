@@ -13,7 +13,6 @@ import {
 } from "../config/AwaitingTesting/Sheets.js";
 import { PASS_RATE, TOP_CADET_DATA } from "../config/AwaitingTesting/Exams.js";
 
-import { ReadFile } from "./Files.js";
 import { getInput } from "../utils/Input.js";
 import {
   GetSheets,
@@ -22,6 +21,7 @@ import {
   CloneSheet,
 } from "../utils/Sheets.js";
 import { SerialisedPlayer, PlayerField, ValueRange } from "../utils/Types.js";
+import { readFile } from "fs/promises";
 
 const displayPattern = /.+ - ([0-9]+) \(.+ K \| .+ P | .+ B\)/;
 
@@ -98,7 +98,7 @@ async function GetClassNumber(): Promise<number> {
 
 async function ReadParsedFile(): Promise<SerialisedPlayer[]> {
   const path = join(".", PARSED_FOLDER, PARSED_FILES.Valid);
-  return JSON.parse(await ReadFile(path));
+  return JSON.parse(await readFile(path, "utf-8"));
 }
 
 function GetValues(

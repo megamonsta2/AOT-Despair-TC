@@ -1,5 +1,5 @@
 import { join } from "path";
-import { writeFile } from "fs/promises";
+import { readFile, writeFile } from "fs/promises";
 
 import { MAX_SCORE, SPEED_TIMES } from "../config/AwaitingTesting/Exams.js";
 import {
@@ -10,7 +10,6 @@ import {
 } from "../config/AwaitingTesting/Paths.js";
 
 import Player from "./Player.js";
-import { ReadFile } from "./Files.js";
 import { SerialisedPlayer } from "../utils/Types.js";
 import { AddError, DisplayErrors, Errored } from "../utils/Error.js";
 
@@ -449,7 +448,7 @@ function GetPlayer(username: string): Player {
 }
 
 async function ReadInputFile(file: string) {
-  const raw = await ReadFile(join(INPUT_FOLDER, file));
+  const raw = await readFile(join(INPUT_FOLDER, file), "utf-8");
   if (raw === "") {
     return "";
   } else {
