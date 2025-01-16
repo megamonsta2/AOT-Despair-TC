@@ -13,12 +13,12 @@ import {
   RawRequestRow,
 } from "../utils/Types.js";
 import { GetSheetData, SetSheetData, ParseSheetBool } from "../utils/Sheets.js";
+import ValidateDate from "../utils/Date.js";
 
 let RequestRows: number[];
 
 const RAW_START_ROW = RAW_CELL_DATA.START_ROW;
 const RAW_INDEXES = RAW_CELL_DATA.INDEXES;
-const DATE_PATTERN = /([0-9]+)\/([0-9]+)\/([0-9]+)/;
 
 export default async function main() {
   // Get rows to get data from
@@ -132,8 +132,8 @@ function ParseRanklockRequests(
   requests.forEach(function (x, i) {
     // Get dates
     const [startDate, endDate] = [
-      ParseRanklockDate(x[RAW_INDEXES.START_DATE]),
-      ParseRanklockDate(x[RAW_INDEXES.END_DATE]),
+      ValidateDate(x[RAW_INDEXES.START_DATE]),
+      ValidateDate(x[RAW_INDEXES.END_DATE]),
     ];
 
     // Invalid dates
@@ -153,31 +153,6 @@ function ParseRanklockRequests(
   });
 
   return parsedData;
-}
-
-function ParseRanklockDate(raw: string): Date | undefined {
-  const patternResult = DATE_PATTERN.exec(raw);
-  if (!patternResult) {
-    console.warn(`${raw} is not a valid date!`);
-    return;
-  }
-
-  const [day, month, year] = [
-    Number(patternResult[1]),
-    Number(patternResult[2]),
-    Number(patternResult[3]),
-  ];
-
-  if (ValidateDate(day) || ValidateDate(month) || ValidateDate(year)) {
-    console.warn(`${day}/${month}/${year} is an invalid date!`);
-    return;
-  }
-
-  return new Date(year, month - 1, day);
-}
-
-function ValidateDate(dateNum: number) {
-  return isNaN(dateNum) || dateNum <= 0;
 }
 
 // Post Parsed
