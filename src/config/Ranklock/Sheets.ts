@@ -2,7 +2,7 @@ import { RanklockField } from "../../utils/Types.js";
 
 export const SHEET_ID = "1rufDLllXJb2RLseYxvqxhfFzYP9XQ5P4pzsX1OyN_cg";
 
-export const RAW_SHEET_NAME = "REQUESTS";
+export const RAW_SHEET_NAME = "RANKLOCK REQUESTS";
 export const RAW_CELL_DATA = {
   INDEXES: {
     USERNAME: 2,
@@ -20,7 +20,7 @@ export const RAW_CELL_DATA = {
   START_ROW: 2,
 };
 
-export const PARSED_SHEET_NAME = "DATA";
+export const PARSED_SHEET_NAME = "RANKLOCKS";
 export const PARSED_CELL_DATA = {
   INDEXES: {
     USERNAME: 0,
