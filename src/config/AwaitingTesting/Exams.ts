@@ -14,6 +14,11 @@ export const SPEED_TIMES = {
   Lower: 20,
 };
 
+export const OBBY_TIMES = {
+  Max: 80,
+  Fail: 100,
+};
+
 export const PASS_RATE = 60;
 export const TOP_CADET_DATA = {
   POINT_REQ: 90,
