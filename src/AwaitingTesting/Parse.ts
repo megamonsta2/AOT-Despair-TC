@@ -295,57 +295,50 @@ function ParseSpeedScore(secs: number): number {
 // Obby
 async function ParseObby() {
   const raw: DefaultInput = await ReadInputFile(INPUT_FILES.Obby);
-  const Promises: Promise<void>[] = [];
 
   for (const set of raw) {
-    Promises.push(ParseObbySet(set));
+    ParseObbySet(set);
   }
-
-  return Promise.all(Promises);
 }
 
-function ParseObbySet(data: string): Promise<void> {
-  return new Promise(function (resolve) {
-    let GettingPlayers: "Pass" | "Fail" = "Pass";
-    const splitData = data.split("\n");
+function ParseObbySet(data: string) {
+  let GettingPlayers: "Pass" | "Fail" = "Pass";
+  const splitData = data.split("\n");
 
-    for (const line of splitData) {
-      if (line.includes("Host")) {
-        break;
-      } else if (line.includes("Succeeded")) {
-        GettingPlayers = "Pass";
-        continue;
-      } else if (line.includes("Failed")) {
-        GettingPlayers = "Fail";
-        continue;
-      } else if (line === "") {
-        continue;
-      }
-
-      // Format: - USERNAME | MINS:SECS:MILISECS
-      const PatternResult = ObbyPattern.exec(line);
-      if (!PatternResult) {
-        AddError("Obby", `${line} is an invalid player!`);
-        continue;
-      } else if (PatternResult[0] !== line) {
-        AddError("Obby", `${line} contains more than the regex pattern!`);
-        continue;
-      }
-
-      const username = PatternResult[1];
-      const [mins, secs] = [Number(PatternResult[2]), Number(PatternResult[3])];
-
-      if (isNaN(mins) || isNaN(secs)) {
-        AddError("Obby", `${username} has an invalid obby time!`);
-        continue;
-      }
-
-      const PlayerObj = GetPlayer(username);
-      PlayerObj.AddObby(ParseObbyScore(GettingPlayers, mins, secs));
+  for (const line of splitData) {
+    if (line.includes("Host")) {
+      break;
+    } else if (line.includes("Succeeded")) {
+      GettingPlayers = "Pass";
+      continue;
+    } else if (line.includes("Failed")) {
+      GettingPlayers = "Fail";
+      continue;
+    } else if (line === "") {
+      continue;
     }
 
-    resolve();
-  });
+    // Format: - USERNAME | MINS:SECS:MILISECS
+    const PatternResult = ObbyPattern.exec(line);
+    if (!PatternResult) {
+      AddError("Obby", `${line} is an invalid player!`);
+      continue;
+    } else if (PatternResult[0] !== line) {
+      AddError("Obby", `${line} contains more than the regex pattern!`);
+      continue;
+    }
+
+    const username = PatternResult[1];
+    const [mins, secs] = [Number(PatternResult[2]), Number(PatternResult[3])];
+
+    if (isNaN(mins) || isNaN(secs)) {
+      AddError("Obby", `${username} has an invalid obby time!`);
+      continue;
+    }
+
+    const PlayerObj = GetPlayer(username);
+    PlayerObj.AddObby(ParseObbyScore(GettingPlayers, mins, secs));
+  }
 }
 
 // TODO: OBBY CALCULATOR
