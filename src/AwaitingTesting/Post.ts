@@ -40,11 +40,13 @@ export default async function main() {
       return;
     }
 
+    await new Promise((resolve) => setTimeout(resolve, 1500)); // Wait 2 seconds
+
     const parsedPlayers = await ReadParsedFile();
     const ranges: ValueRange[] = [
       // Class
       {
-        range: sheet_name + "!B3",
+        range: `'${sheet_name}'!${PARSED_CELL_DATA.CLASS_NUMBER_CELL}`,
         values: [[sheet_name]],
       },
 
@@ -119,7 +121,7 @@ function GetValues(
   });
 
   return {
-    range: `${sheet_name}!${PARSED_COLUMN_DATA[field]}${PARSED_CELL_DATA.START_ROW}:${PARSED_COLUMN_DATA[field]}${PARSED_CELL_DATA.END_ROW}`,
+    range: `'${sheet_name}'!${PARSED_COLUMN_DATA[field]}${PARSED_CELL_DATA.START_ROW}:${PARSED_COLUMN_DATA[field]}${PARSED_CELL_DATA.END_ROW}`,
     values: values,
   };
 }
