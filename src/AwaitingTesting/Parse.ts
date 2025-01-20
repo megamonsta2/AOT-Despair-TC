@@ -59,7 +59,7 @@ const BPScores: Map<Player, number[]> = new Map();
 
 const KnowledgeScorePattern = /([0-9]+) \/ [0-9]+/;
 const DummiesPattern = /- ([A-z0-9_]+) \| x([0-9]+) kills/;
-const ObbyPattern = /- ([A-z0-9_]+) \| ([0-9]+):([0-9]+):([0-9]+)/;
+const ObbyPattern = /- ([A-z0-9_]+) \| ([0-9]+):([0-9]+):[0-9]+/;
 const ManualPattern = /([A-z0-9_]+) - ([0-9]+)/;
 
 export default async function main() {
@@ -333,19 +333,15 @@ function ParseObbySet(data: string): Promise<void> {
       }
 
       const username = PatternResult[1];
-      const [mins, secs, milsecs] = [
-        Number(PatternResult[2]),
-        Number(PatternResult[3]),
-        Number(PatternResult[4]),
-      ];
+      const [mins, secs] = [Number(PatternResult[2]), Number(PatternResult[3])];
 
-      if (isNaN(mins) || isNaN(secs) || isNaN(milsecs)) {
+      if (isNaN(mins) || isNaN(secs)) {
         AddError("Obby", `${username} has an invalid obby time!`);
         continue;
       }
 
       const PlayerObj = GetPlayer(username);
-      PlayerObj.AddObby(ParseObbyScore(GettingPlayers, mins, secs, milsecs));
+      PlayerObj.AddObby(ParseObbyScore(GettingPlayers, mins, secs));
     }
 
     resolve();
@@ -357,7 +353,6 @@ function ParseObbyScore(
   status: "Pass" | "Fail",
   mins: number,
   secs: number,
-  milsecs: number,
 ): number {
   if (status === "Pass") {
     return 10;
