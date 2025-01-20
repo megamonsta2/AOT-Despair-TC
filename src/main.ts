@@ -1,6 +1,7 @@
 import input from "./utils/Input.js";
 import awaitingTesting from "./AwaitingTesting/main.js";
 import ranklock from "./Ranklock/main.js";
+import enlistment from "./Enlistment/main.js";
 
 const InputData = new input({
   a: {
@@ -10,6 +11,10 @@ const InputData = new input({
   b: {
     Name: "Ranklocks",
     Function: ranklock,
+  },
+  c: {
+    Name: "Enlistment",
+    Function: enlistment,
   },
 });
 

@@ -1,5 +1,6 @@
 import { sheets_v4 } from "googleapis";
 
+// Other
 export type ValueRange = sheets_v4.Schema$ValueRange;
 export type InputOptions = {
   [key: string]: {
@@ -8,6 +9,7 @@ export type InputOptions = {
   };
 };
 
+// Scores
 export type Practical = "Dummies" | "Speed" | "Obby";
 export type Exam = "Knowledge" | "BonusPoints" | Practical;
 export type PlayerField = "Username" | Exam;
@@ -17,6 +19,7 @@ export type SerialisedPlayer = {
   [key in Exam]: number | undefined;
 };
 
+// Ranklocks
 export type RanklockField =
   | "USERNAME"
   | "REASON"
@@ -36,4 +39,14 @@ export interface ParsedRanklockData extends ComparisonRanklockData {
   Username: string;
   Reason: string;
   Evidence: string;
+}
+
+// Enlistment
+export type EnlistmentField = "USERNAME" | "LORE_NAME" | "ORIGIN";
+export type RawEnlistmentData = [string, string, string, string];
+export interface ParsedEnlistmentData {
+  Username: string;
+  LoreName: string;
+  Origin: string;
+  Consent: boolean;
 }
