@@ -5,7 +5,7 @@ export const MAX_SCORE: { [key in Exam | "AltPrac"]: number } = {
   BonusPoints: 10,
   Dummies: 20,
   Speed: 20,
-  Obby: 20,
+  Obby: 10,
   AltPrac: 50,
 };
 
