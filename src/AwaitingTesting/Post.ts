@@ -57,6 +57,8 @@ export default async function main() {
       GetValues(sheet_name, parsedPlayers, "Dummies"),
       GetValues(sheet_name, parsedPlayers, "Speed"),
       GetValues(sheet_name, parsedPlayers, "Obby"),
+      GetValues(sheet_name, parsedPlayers, "Tundra"),
+      GetValues(sheet_name, parsedPlayers, "TitanTraining"),
     ];
 
     await SetSheetData(PARSED_SHEET_ID, ranges);
