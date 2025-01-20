@@ -1,11 +1,12 @@
 import { Exam } from "../../utils/Types.js";
 
-export const MAX_SCORE: { [key in Exam]: number } = {
+export const MAX_SCORE: { [key in Exam | "AltPrac"]: number } = {
   Knowledge: 50,
   BonusPoints: 10,
   Dummies: 20,
   Speed: 20,
   Obby: 20,
+  AltPrac: 50,
 };
 
 export const SPEED_TIMES = {

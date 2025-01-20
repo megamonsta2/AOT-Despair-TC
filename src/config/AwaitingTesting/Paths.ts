@@ -11,6 +11,9 @@ export const INPUT_FILES: { [key in PlayerField]: string } = {
   Dummies: "Dummies.json",
   Speed: "Speed.json",
   Obby: "Obby.json",
+
+  TitanTraining: "TitanTraining.json",
+  Tundra: "Tundra.json",
 };
 export const PARSED_FILES = {
   Valid: "Valid.json",

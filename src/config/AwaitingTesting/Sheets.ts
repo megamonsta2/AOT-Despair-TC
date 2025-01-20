@@ -35,5 +35,7 @@ export const PARSED_COLUMN_DATA: {
   Dummies: "M",
   Speed: "O",
   Obby: "Q",
-  Display: "S",
+  Tundra: "S",
+  TitanTraining: "U",
+  Display: "W",
 };

@@ -11,12 +11,13 @@ export type InputOptions = {
 
 // Scores
 export type Practical = "Dummies" | "Speed" | "Obby";
+export type AltPractical = "Tundra" | "TitanTraining";
 export type Exam = "Knowledge" | "BonusPoints" | Practical;
-export type PlayerField = "Username" | Exam;
+export type PlayerField = "Username" | Exam | AltPractical;
 export type SerialisedPlayer = {
   Username: string;
 } & {
-  [key in Exam]: number | undefined;
+  [key in Exam | AltPractical]: number | undefined;
 };
 
 // Ranklocks

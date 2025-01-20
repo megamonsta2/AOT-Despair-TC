@@ -79,6 +79,8 @@ export default async function main() {
       ParseSpeed(),
       ParseObby(),
       ParseBP(),
+      ParseTundra(),
+      ParseTitanTraining(),
     ]);
 
     if (Errored()) {
@@ -421,6 +423,106 @@ function AddBPScores() {
       player.AddBonusPoints(point);
     }
   }
+}
+
+// Alt Practicals
+async function ParseTundra() {
+  const raw: DefaultInput = await ReadInputFile(INPUT_FILES.Tundra);
+  const Promises: Promise<void>[] = [];
+
+  for (const set of raw) {
+    for (const line of set.split("\n")) {
+      Promises.push(ParseTundraPlayer(line));
+    }
+  }
+
+  return Promise.all(Promises);
+}
+
+function ParseTundraPlayer(line: string): Promise<void> {
+  return new Promise(function (resolve) {
+    const PatternResult = ManualPattern.exec(line);
+    if (!PatternResult) {
+      AddError("Tundra", `${line} is an invalid line!`);
+      resolve();
+      return;
+    } else if (PatternResult[0] !== line) {
+      AddError("Tundra", `${line} contains more than the regex pattern!`);
+      resolve();
+      return;
+    }
+
+    const username = PatternResult[1];
+    const points = Number(PatternResult[2]);
+
+    if (isNaN(points) || points < 0) {
+      AddError(
+        "Tundra",
+        `${username} was given an invalid amount of Tundra Points: ${PatternResult[2]}!`,
+      );
+      resolve();
+      return;
+    }
+
+    const PlayerObj = GetPlayer(username);
+    PlayerObj.AddTundra(ParseAltPracScore(points));
+
+    resolve();
+  });
+}
+
+async function ParseTitanTraining() {
+  const raw: DefaultInput = await ReadInputFile(INPUT_FILES.TitanTraining);
+  const Promises: Promise<void>[] = [];
+
+  for (const set of raw) {
+    for (const line of set.split("\n")) {
+      Promises.push(ParseTitanTrainingPlayer(line));
+    }
+  }
+
+  return Promise.all(Promises);
+}
+
+function ParseTitanTrainingPlayer(line: string): Promise<void> {
+  return new Promise(function (resolve) {
+    const PatternResult = ManualPattern.exec(line);
+    if (!PatternResult) {
+      AddError("TitanTraining", `${line} is an invalid line!`);
+      resolve();
+      return;
+    } else if (PatternResult[0] !== line) {
+      AddError(
+        "TitanTraining",
+        `${line} contains more than the regex pattern!`,
+      );
+      resolve();
+      return;
+    }
+
+    const username = PatternResult[1];
+    const points = Number(PatternResult[2]);
+
+    if (isNaN(points) || points < 0) {
+      AddError(
+        "TitanTraining",
+        `${username} was given an invalid amount of TT Points: ${PatternResult[2]}!`,
+      );
+      resolve();
+      return;
+    }
+
+    const PlayerObj = GetPlayer(username);
+    PlayerObj.AddTitanTraining(ParseAltPracScore(points));
+
+    resolve();
+  });
+}
+
+function ParseAltPracScore(score: number) {
+  if (score > MAX_SCORE.AltPrac) return MAX_SCORE.AltPrac;
+  if (score < 0) return 0;
+  return score;
 }
 
 // Other

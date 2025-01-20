@@ -11,6 +11,9 @@ export default class Player {
   Speed?: number;
   Obby?: number;
 
+  Tundra?: number;
+  TitanTraining?: number;
+
   constructor(user: string) {
     this.Username = user;
   }
@@ -51,6 +54,18 @@ export default class Player {
     }
   }
 
+  AddTundra(score: number) {
+    if (!this.Tundra || this.Tundra < score) {
+      this.Tundra = score;
+    }
+  }
+
+  AddTitanTraining(score: number) {
+    if (!this.TitanTraining || this.TitanTraining < score) {
+      this.TitanTraining = score;
+    }
+  }
+
   Serialise(): SerialisedPlayer {
     return {
       Username: this.Username,
@@ -59,6 +74,8 @@ export default class Player {
       Dummies: this.Dummies,
       Speed: this.Speed,
       Obby: this.Obby,
+      Tundra: this.Tundra,
+      TitanTraining: this.TitanTraining,
     };
   }
 }
