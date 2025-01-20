@@ -59,9 +59,8 @@ const BPScores: Map<Player, number[]> = new Map();
 
 const KnowledgeScorePattern = /([0-9]+) \/ [0-9]+/;
 const DummiesPattern = /- ([A-z0-9_]+) \| x([0-9]+) kills/;
-const SpeedPattern = /([A-z0-9_]+) - ([0-9]+)/;
 const ObbyPattern = /- ([A-z0-9_]+) \| ([0-9]+):([0-9]+):([0-9]+)/;
-const BPPattern = /([A-z0-9_]+) - ([0-9]+)/;
+const ManualPattern = /([A-z0-9_]+) - ([0-9]+)/;
 
 export default async function main() {
   ValidPlayers.clear();
@@ -252,7 +251,7 @@ async function ParseSpeed() {
 
 function ParseSpeedPlayer(line: string): Promise<void> {
   return new Promise(function (resolve) {
-    const PatternResult = SpeedPattern.exec(line);
+    const PatternResult = ManualPattern.exec(line);
     if (!PatternResult) {
       AddError("Speed", `${line} is an invalid line!`);
       resolve();
@@ -381,7 +380,7 @@ async function ParseBP() {
 
 function ParseBPPlayer(line: string): Promise<void> {
   return new Promise(function (resolve) {
-    const PatternResult = BPPattern.exec(line);
+    const PatternResult = ManualPattern.exec(line);
     if (!PatternResult) {
       AddError("BP", `${line} is an invalid line!`);
       resolve();
