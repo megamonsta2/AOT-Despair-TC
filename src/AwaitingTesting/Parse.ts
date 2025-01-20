@@ -1,7 +1,11 @@
 import { join } from "path";
 import { readFile, writeFile } from "fs/promises";
 
-import { MAX_SCORE, SPEED_TIMES } from "../config/AwaitingTesting/Exams.js";
+import {
+  MAX_SCORE,
+  SPEED_TIMES,
+  OBBY_TIMES,
+} from "../config/AwaitingTesting/Exams.js";
 import {
   INPUT_FILES,
   INPUT_FOLDER,
@@ -347,11 +351,17 @@ function ParseObbyScore(
   mins: number,
   secs: number,
 ): number {
-  if (status === "Pass") {
-    return 10;
-  } else {
-    return 5;
-  }
+  secs += mins * 60;
+
+  if (status === "Fail") return 0;
+  if (secs >= OBBY_TIMES.Fail) return 0;
+  if (secs <= OBBY_TIMES.Max) return MAX_SCORE.Obby;
+
+  // Secs over max time required (e.g. 98 - 80 = 18)
+  // Half it and round down to be the points to take off (e.g. floor(18 / 2) = 9)
+  const diff = Math.floor((secs - OBBY_TIMES.Max) / 2);
+
+  return MAX_SCORE.Obby - diff;
 }
 
 // Speed
