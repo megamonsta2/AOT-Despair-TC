@@ -9,14 +9,14 @@ export default class Player {
 
   Dummies?: number;
   Speed?: number;
-  Obby: [number | undefined, number | undefined];
+  Obby: [number, number]; // 0 is lowest, 1 is highest
 
   Tundra?: number;
   TitanTraining?: number;
 
   constructor(user: string) {
     this.Username = user;
-    this.Obby = [undefined, undefined];
+    this.Obby = [MAX_SCORE.Obby, MAX_SCORE.Obby];
   }
 
   AddKnowledge(score: number) {
@@ -50,14 +50,16 @@ export default class Player {
   }
 
   AddObby(score: number) {
-    if (this.Obby[1]) return;
+    // If 1 is below score, score is too large
+    if (this.Obby[1] <= score) return;
 
-    if (this.Obby[0]) {
+    // Input higher than 0
+    if (this.Obby[0] < score) {
       this.Obby[1] = score;
-      return;
+      // Input lower than 0
+    } else {
+      this.Obby = [score, this.Obby[0]];
     }
-
-    this.Obby[0] = score;
   }
 
   AddTundra(score: number) {
@@ -73,9 +75,6 @@ export default class Player {
   }
 
   GetObbyScore(): number | undefined {
-    if (!this.Obby[0]) return;
-    if (!this.Obby[1]) return this.Obby[0];
-
     return Math.max(...(this.Obby as number[]));
   }
 
