@@ -59,6 +59,8 @@ type KnowledgeInput = [string, string][];
 
 const ValidPlayers: Map<string, Player> = new Map();
 const InvalidPlayers: Map<string, Player> = new Map();
+
+const ObbyScores: Map<Player, number[]> = new Map();
 const BPScores: Map<Player, number[]> = new Map();
 
 const KnowledgeScorePattern = /([0-9]+) \/ [0-9]+/;
@@ -75,6 +77,7 @@ export default async function main() {
 
   // Assign scores
   while (true) {
+    ObbyScores.clear();
     BPScores.clear();
 
     await Promise.all([
@@ -94,6 +97,7 @@ export default async function main() {
     }
   }
 
+  AddObbyScores();
   AddBPScores();
   await WritePlayersToFile();
 
@@ -341,7 +345,14 @@ function ParseObbySet(data: string) {
     }
 
     const PlayerObj = GetPlayer(username);
-    PlayerObj.AddObby(ParseObbyScore(GettingPlayers, mins, secs));
+    const PlayerObby = ObbyScores.get(PlayerObj);
+    const points = ParseObbyScore(GettingPlayers, mins, secs);
+
+    if (PlayerObby) {
+      PlayerObby.push(points);
+    } else {
+      ObbyScores.set(PlayerObj, [points]);
+    }
   }
 }
 
@@ -362,6 +373,14 @@ function ParseObbyScore(
   const diff = Math.floor((secs - OBBY_TIMES.Max) / 2);
 
   return MAX_SCORE.Obby - diff;
+}
+
+function AddObbyScores() {
+  for (const [player, points] of ObbyScores.entries()) {
+    for (const point of points) {
+      player.AddObby(point);
+    }
+  }
 }
 
 // Speed
