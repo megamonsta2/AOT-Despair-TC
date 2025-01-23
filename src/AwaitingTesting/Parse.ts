@@ -60,9 +60,6 @@ type KnowledgeInput = [string, string][];
 const ValidPlayers: Map<string, Player> = new Map();
 const InvalidPlayers: Map<string, Player> = new Map();
 
-const ObbyScores: Map<Player, number[]> = new Map();
-const BPScores: Map<Player, number[]> = new Map();
-
 const KnowledgeScorePattern = /([0-9]+) \/ [0-9]+/;
 const DummiesPattern = /- ([A-z0-9_]+) \| x([0-9]+) kills/;
 const ObbyPattern = /- ([A-z0-9_]+) \| ([0-9]+):([0-9]+):[0-9]+/;
@@ -77,8 +74,6 @@ export default async function main() {
 
   // Assign scores
   while (true) {
-    ObbyScores.clear();
-    BPScores.clear();
     await ResetPlayers();
 
     await Promise.all([
@@ -98,8 +93,6 @@ export default async function main() {
     }
   }
 
-  AddObbyScores();
-  AddBPScores();
   await WritePlayersToFile();
 
   console.log(ValidPlayers);
@@ -349,14 +342,8 @@ function ParseObbySet(data: string) {
     }
 
     const PlayerObj = GetPlayer(username);
-    const PlayerObby = ObbyScores.get(PlayerObj);
     const points = ParseObbyScore(GettingPlayers, mins, secs);
-
-    if (PlayerObby) {
-      PlayerObby.push(points);
-    } else {
-      ObbyScores.set(PlayerObj, [points]);
-    }
+    PlayerObj.AddObby(points);
   }
 }
 
@@ -377,14 +364,6 @@ function ParseObbyScore(
   const diff = Math.floor((secs - OBBY_TIMES.Max) / 2);
 
   return MAX_SCORE.Obby - diff;
-}
-
-function AddObbyScores() {
-  for (const [player, points] of ObbyScores.entries()) {
-    for (const point of points) {
-      player.AddObby(point);
-    }
-  }
 }
 
 // Speed
@@ -422,20 +401,7 @@ function ParseBPPlayer(line: string) {
   }
 
   const PlayerObj = GetPlayer(username);
-  const PlayerBP = BPScores.get(PlayerObj);
-  if (PlayerBP) {
-    PlayerBP.push(points);
-  } else {
-    BPScores.set(PlayerObj, [points]);
-  }
-}
-
-function AddBPScores() {
-  for (const [player, points] of BPScores.entries()) {
-    for (const point of points) {
-      player.AddBonusPoints(point);
-    }
-  }
+  PlayerObj.AddBonusPoints(points);
 }
 
 // Alt Practicals
@@ -494,7 +460,6 @@ function ParseTitanTrainingPlayer(line: string) {
     return;
   } else if (PatternResult[0] !== line) {
     AddError("TitanTraining", `${line} contains more than the regex pattern!`);
-
     return;
   }
 
