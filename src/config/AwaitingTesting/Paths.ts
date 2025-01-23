@@ -1,7 +1,11 @@
 import { PlayerField } from "../../utils/Types.js";
+import {
+  INPUT_FOLDER as MAIN_INPUT_FOLDER,
+  PARSED_FOLDER as MAIN_PARSED_FOLDER,
+} from "../Paths.js";
 
-export const INPUT_FOLDER = "inputs/AwaitingTesting";
-export const PARSED_FOLDER = "parsed";
+export const INPUT_FOLDER = `${MAIN_INPUT_FOLDER}/AwaitingTesting`;
+export const PARSED_FOLDER = MAIN_PARSED_FOLDER;
 
 export const INPUT_FILES: { [key in PlayerField]: string } = {
   Username: "Usernames.json",
