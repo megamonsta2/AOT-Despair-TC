@@ -1,4 +1,4 @@
-import { readFile, access, writeFile } from "fs/promises";
+import { mkdir, readFile, access, writeFile } from "fs/promises";
 import { join } from "path";
 
 import {
@@ -67,6 +67,13 @@ async function GetSheetCadets() {
 }
 
 async function GetGameCadets(): Promise<string[] | undefined> {
+  // Create folder if doesn't exist
+  try {
+    await access(INPUT_FOLDER);
+  } catch {
+    await mkdir(INPUT_FOLDER);
+  }
+
   // Create file if doesn't exist
   if (!(await GameCadetsExists())) {
     console.warn("No input file, creating now.");
