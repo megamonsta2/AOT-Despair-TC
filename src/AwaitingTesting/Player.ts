@@ -9,7 +9,7 @@ export default class Player {
 
   Dummies?: number;
   Speed?: number;
-  Obby!: [number, number]; // 0 is lowest, 1 is highest
+  Obby!: [number | undefined, number | undefined];
 
   Tundra?: number;
   TitanTraining?: number;
@@ -24,7 +24,7 @@ export default class Player {
     this.BonusPoints = undefined;
     this.Dummies = undefined;
     this.Speed = undefined;
-    this.Obby = [MAX_SCORE.Obby, MAX_SCORE.Obby];
+    this.Obby = [undefined, undefined];
     this.Tundra = undefined;
     this.TitanTraining = undefined;
   }
@@ -48,42 +48,47 @@ export default class Player {
   }
 
   AddDummies(score: number) {
-    if (!this.Dummies || this.Dummies > score) {
+    if (!this.Dummies) {
       this.Dummies = score;
     }
   }
 
   AddSpeed(score: number) {
-    if (!this.Speed || this.Speed > score) {
+    if (!this.Speed) {
       this.Speed = score;
     }
   }
 
   AddObby(score: number) {
-    // If 1 is below score, score is too large
-    if (this.Obby[1] <= score) return;
+    // If has 2nd score, end
+    if (this.Obby[1]) return;
 
-    // Input higher than 0
-    if (this.Obby[0] < score) {
+    // If has 1st score, assign to 2nd score
+    if (this.Obby[0]) {
       this.Obby[1] = score;
-      // Input lower than 0
-    } else {
-      this.Obby = [score, this.Obby[0]];
+      return;
     }
+
+    // Assign to 1st score
+    this.Obby[0] = score;
   }
 
   GetObbyScore(): number | undefined {
-    return Math.max(...(this.Obby as number[]));
+    if (this.Obby[1]) {
+      return Math.max(...(this.Obby as number[]));
+    } else {
+      return this.Obby[0];
+    }
   }
 
   AddTundra(score: number) {
-    if (!this.Tundra || this.Tundra < score) {
+    if (!this.Tundra) {
       this.Tundra = score;
     }
   }
 
   AddTitanTraining(score: number) {
-    if (!this.TitanTraining || this.TitanTraining < score) {
+    if (!this.TitanTraining) {
       this.TitanTraining = score;
     }
   }
