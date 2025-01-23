@@ -79,6 +79,7 @@ export default async function main() {
   while (true) {
     ObbyScores.clear();
     BPScores.clear();
+    await ResetPlayers();
 
     await Promise.all([
       ParseKnowledge(),
@@ -105,6 +106,26 @@ export default async function main() {
   console.log(InvalidPlayers);
 
   console.log("Parsed!");
+}
+
+function ResetPlayers() {
+  const ValidPromise: Promise<void> = new Promise(function (resolve) {
+    ValidPlayers.forEach(function (player) {
+      player.Reset();
+    });
+
+    resolve();
+  });
+
+  const InvalidPromise: Promise<void> = new Promise(function (resolve) {
+    InvalidPlayers.forEach(function (player) {
+      player.Reset();
+    });
+
+    resolve();
+  });
+
+  return Promise.all([ValidPromise, InvalidPromise]);
 }
 
 // Usernames

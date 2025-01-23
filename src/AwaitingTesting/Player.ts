@@ -9,14 +9,24 @@ export default class Player {
 
   Dummies?: number;
   Speed?: number;
-  Obby: [number, number]; // 0 is lowest, 1 is highest
+  Obby!: [number, number]; // 0 is lowest, 1 is highest
 
   Tundra?: number;
   TitanTraining?: number;
 
   constructor(user: string) {
     this.Username = user;
+    this.Reset();
+  }
+
+  Reset() {
+    this.KnowledgeTest = undefined;
+    this.BonusPoints = undefined;
+    this.Dummies = undefined;
+    this.Speed = undefined;
     this.Obby = [MAX_SCORE.Obby, MAX_SCORE.Obby];
+    this.Tundra = undefined;
+    this.TitanTraining = undefined;
   }
 
   AddKnowledge(score: number) {
@@ -62,6 +72,10 @@ export default class Player {
     }
   }
 
+  GetObbyScore(): number | undefined {
+    return Math.max(...(this.Obby as number[]));
+  }
+
   AddTundra(score: number) {
     if (!this.Tundra || this.Tundra < score) {
       this.Tundra = score;
@@ -72,10 +86,6 @@ export default class Player {
     if (!this.TitanTraining || this.TitanTraining < score) {
       this.TitanTraining = score;
     }
-  }
-
-  GetObbyScore(): number | undefined {
-    return Math.max(...(this.Obby as number[]));
   }
 
   Serialise(): SerialisedPlayer {
