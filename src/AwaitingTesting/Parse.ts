@@ -183,56 +183,46 @@ function ParseKnowledgeScore(username: string, raw: string): number | void {
 // Dummies
 async function ParseDummies() {
   const raw: DefaultInput = await ReadInputFile(INPUT_FILES.Dummies);
-  const Promises: Promise<void>[] = [];
 
   for (const set of raw) {
-    Promises.push(ParseDummiesSet(set));
+    ParseDummiesSet(set);
   }
-
-  return Promise.all(Promises);
 }
 
-function ParseDummiesSet(data: string): Promise<void> {
-  return new Promise(function (resolve) {
-    const splitData = data.split("\n");
+function ParseDummiesSet(data: string) {
+  const splitData = data.split("\n");
 
-    for (const line of splitData) {
-      if (line.includes("Participants")) {
-        continue;
-      }
-
-      if (line === "") {
-        break;
-      }
-
-      // Format: - USERNAME | xKILLS kills
-      const PatternResult = DummiesPattern.exec(line);
-      if (!PatternResult) {
-        AddError("Dummies", `${line} is an invalid player!`);
-        continue;
-      }
-
-      if (PatternResult[0] !== line) {
-        AddError("Dummies", `${line} contains more than the regex pattern!`);
-        continue;
-      }
-
-      const username = PatternResult[1];
-      const kills = Number(PatternResult[2]);
-      if (isNaN(kills) || kills < 0) {
-        AddError(
-          "Dummies",
-          `${username} has an invalid amount of dummy kills!`,
-        );
-        continue;
-      }
-
-      const PlayerObj = GetPlayer(username);
-      PlayerObj.AddDummies(ParseDummiesScore(kills));
+  for (const line of splitData) {
+    if (line.includes("Participants")) {
+      continue;
     }
 
-    resolve();
-  });
+    if (line === "") {
+      break;
+    }
+
+    // Format: - USERNAME | xKILLS kills
+    const PatternResult = DummiesPattern.exec(line);
+    if (!PatternResult) {
+      AddError("Dummies", `${line} is an invalid player!`);
+      continue;
+    }
+
+    if (PatternResult[0] !== line) {
+      AddError("Dummies", `${line} contains more than the regex pattern!`);
+      continue;
+    }
+
+    const username = PatternResult[1];
+    const kills = Number(PatternResult[2]);
+    if (isNaN(kills) || kills < 0) {
+      AddError("Dummies", `${username} has an invalid amount of dummy kills!`);
+      continue;
+    }
+
+    const PlayerObj = GetPlayer(username);
+    PlayerObj.AddDummies(ParseDummiesScore(kills));
+  }
 }
 
 function ParseDummiesScore(kills: number): number {
@@ -248,46 +238,39 @@ function ParseDummiesScore(kills: number): number {
 // Speed
 async function ParseSpeed() {
   const raw: DefaultInput = await ReadInputFile(INPUT_FILES.Speed);
-  const Promises: Promise<void>[] = [];
 
   for (const set of raw) {
     for (const line of set.split("\n")) {
-      Promises.push(ParseSpeedPlayer(line));
+      ParseSpeedPlayer(line);
     }
   }
-
-  return Promise.all(Promises);
 }
 
-function ParseSpeedPlayer(line: string): Promise<void> {
-  return new Promise(function (resolve) {
-    const PatternResult = ManualPattern.exec(line);
-    if (!PatternResult) {
-      AddError("Speed", `${line} is an invalid line!`);
-      resolve();
-      return;
-    }
+function ParseSpeedPlayer(line: string) {
+  const PatternResult = ManualPattern.exec(line);
+  if (!PatternResult) {
+    AddError("Speed", `${line} is an invalid line!`);
 
-    if (PatternResult[0] !== line) {
-      AddError("Speed", `${line} contains more than the regex pattern!`);
-      resolve();
-      return;
-    }
+    return;
+  }
 
-    const username = PatternResult[1];
-    const secs = Number(PatternResult[2]);
+  if (PatternResult[0] !== line) {
+    AddError("Speed", `${line} contains more than the regex pattern!`);
 
-    if (isNaN(secs) || secs < 0) {
-      AddError("Speed", `${username} has an invalid amount of seconds!`);
-      resolve();
-      return;
-    }
+    return;
+  }
 
-    const PlayerObj = GetPlayer(username);
-    PlayerObj.AddSpeed(ParseSpeedScore(secs));
+  const username = PatternResult[1];
+  const secs = Number(PatternResult[2]);
 
-    resolve();
-  });
+  if (isNaN(secs) || secs < 0) {
+    AddError("Speed", `${username} has an invalid amount of seconds!`);
+
+    return;
+  }
+
+  const PlayerObj = GetPlayer(username);
+  PlayerObj.AddSpeed(ParseSpeedScore(secs));
 }
 
 function ParseSpeedScore(secs: number): number {
@@ -386,52 +369,44 @@ function AddObbyScores() {
 // Speed
 async function ParseBP() {
   const raw: DefaultInput = await ReadInputFile(INPUT_FILES.BonusPoints);
-  const Promises: Promise<void>[] = [];
 
   for (const set of raw) {
     for (const line of set.split("\n")) {
-      Promises.push(ParseBPPlayer(line));
+      ParseBPPlayer(line);
     }
   }
-
-  return Promise.all(Promises);
 }
 
-function ParseBPPlayer(line: string): Promise<void> {
-  return new Promise(function (resolve) {
-    const PatternResult = ManualPattern.exec(line);
-    if (!PatternResult) {
-      AddError("BP", `${line} is an invalid line!`);
-      resolve();
-      return;
-    } else if (PatternResult[0] !== line) {
-      AddError("BP", `${line} contains more than the regex pattern!`);
-      resolve();
-      return;
-    }
+function ParseBPPlayer(line: string) {
+  const PatternResult = ManualPattern.exec(line);
+  if (!PatternResult) {
+    AddError("BP", `${line} is an invalid line!`);
 
-    const username = PatternResult[1];
-    const points = Number(PatternResult[2]);
+    return;
+  } else if (PatternResult[0] !== line) {
+    AddError("BP", `${line} contains more than the regex pattern!`);
 
-    if (isNaN(points) || points < 0) {
-      AddError(
-        "BP",
-        `${username} was given an invalid amount of BP: ${PatternResult[2]}!`,
-      );
-      resolve();
-      return;
-    }
+    return;
+  }
 
-    const PlayerObj = GetPlayer(username);
-    const PlayerBP = BPScores.get(PlayerObj);
-    if (PlayerBP) {
-      PlayerBP.push(points);
-    } else {
-      BPScores.set(PlayerObj, [points]);
-    }
+  const username = PatternResult[1];
+  const points = Number(PatternResult[2]);
 
-    resolve();
-  });
+  if (isNaN(points) || points < 0) {
+    AddError(
+      "BP",
+      `${username} was given an invalid amount of BP: ${PatternResult[2]}!`,
+    );
+    return;
+  }
+
+  const PlayerObj = GetPlayer(username);
+  const PlayerBP = BPScores.get(PlayerObj);
+  if (PlayerBP) {
+    PlayerBP.push(points);
+  } else {
+    BPScores.set(PlayerObj, [points]);
+  }
 }
 
 function AddBPScores() {
@@ -445,95 +420,76 @@ function AddBPScores() {
 // Alt Practicals
 async function ParseTundra() {
   const raw: DefaultInput = await ReadInputFile(INPUT_FILES.Tundra);
-  const Promises: Promise<void>[] = [];
 
   for (const set of raw) {
     for (const line of set.split("\n")) {
-      Promises.push(ParseTundraPlayer(line));
+      ParseTundraPlayer(line);
     }
   }
-
-  return Promise.all(Promises);
 }
 
-function ParseTundraPlayer(line: string): Promise<void> {
-  return new Promise(function (resolve) {
-    const PatternResult = ManualPattern.exec(line);
-    if (!PatternResult) {
-      AddError("Tundra", `${line} is an invalid line!`);
-      resolve();
-      return;
-    } else if (PatternResult[0] !== line) {
-      AddError("Tundra", `${line} contains more than the regex pattern!`);
-      resolve();
-      return;
-    }
+function ParseTundraPlayer(line: string) {
+  const PatternResult = ManualPattern.exec(line);
+  if (!PatternResult) {
+    AddError("Tundra", `${line} is an invalid line!`);
 
-    const username = PatternResult[1];
-    const points = Number(PatternResult[2]);
+    return;
+  } else if (PatternResult[0] !== line) {
+    AddError("Tundra", `${line} contains more than the regex pattern!`);
 
-    if (isNaN(points) || points < 0) {
-      AddError(
-        "Tundra",
-        `${username} was given an invalid amount of Tundra Points: ${PatternResult[2]}!`,
-      );
-      resolve();
-      return;
-    }
+    return;
+  }
 
-    const PlayerObj = GetPlayer(username);
-    PlayerObj.AddTundra(ParseAltPracScore(points));
+  const username = PatternResult[1];
+  const points = Number(PatternResult[2]);
 
-    resolve();
-  });
+  if (isNaN(points) || points < 0) {
+    AddError(
+      "Tundra",
+      `${username} was given an invalid amount of Tundra Points: ${PatternResult[2]}!`,
+    );
+    return;
+  }
+
+  const PlayerObj = GetPlayer(username);
+  PlayerObj.AddTundra(ParseAltPracScore(points));
 }
 
 async function ParseTitanTraining() {
   const raw: DefaultInput = await ReadInputFile(INPUT_FILES.TitanTraining);
-  const Promises: Promise<void>[] = [];
 
   for (const set of raw) {
     for (const line of set.split("\n")) {
-      Promises.push(ParseTitanTrainingPlayer(line));
+      ParseTitanTrainingPlayer(line);
     }
   }
-
-  return Promise.all(Promises);
 }
 
-function ParseTitanTrainingPlayer(line: string): Promise<void> {
-  return new Promise(function (resolve) {
-    const PatternResult = ManualPattern.exec(line);
-    if (!PatternResult) {
-      AddError("TitanTraining", `${line} is an invalid line!`);
-      resolve();
-      return;
-    } else if (PatternResult[0] !== line) {
-      AddError(
-        "TitanTraining",
-        `${line} contains more than the regex pattern!`,
-      );
-      resolve();
-      return;
-    }
+function ParseTitanTrainingPlayer(line: string) {
+  const PatternResult = ManualPattern.exec(line);
+  if (!PatternResult) {
+    AddError("TitanTraining", `${line} is an invalid line!`);
 
-    const username = PatternResult[1];
-    const points = Number(PatternResult[2]);
+    return;
+  } else if (PatternResult[0] !== line) {
+    AddError("TitanTraining", `${line} contains more than the regex pattern!`);
 
-    if (isNaN(points) || points < 0) {
-      AddError(
-        "TitanTraining",
-        `${username} was given an invalid amount of TT Points: ${PatternResult[2]}!`,
-      );
-      resolve();
-      return;
-    }
+    return;
+  }
 
-    const PlayerObj = GetPlayer(username);
-    PlayerObj.AddTitanTraining(ParseAltPracScore(points));
+  const username = PatternResult[1];
+  const points = Number(PatternResult[2]);
 
-    resolve();
-  });
+  if (isNaN(points) || points < 0) {
+    AddError(
+      "TitanTraining",
+      `${username} was given an invalid amount of TT Points: ${PatternResult[2]}!`,
+    );
+    return;
+  }
+
+  const PlayerObj = GetPlayer(username);
+  PlayerObj.AddTitanTraining(ParseAltPracScore(points));
 }
 
 function ParseAltPracScore(score: number) {
