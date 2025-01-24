@@ -12,10 +12,11 @@ import { RawRanklockData, ComparisonRanklockData } from "../utils/Types.js";
 import { GetSheetData } from "../utils/Sheets.js";
 import ValidateDate from "../utils/Date.js";
 
-const RanklockExpired: string[] = []; // Cadets that have their ranklock past the expire date
-const RanklockNotFound: string[] = []; // Cadets that are ranklocked in game but have no data on the sheet
+const RanklockExpired: string[] = []; // Cadets that have their ranklock past the expire date#
 const RanklockMissing: string[] = []; // Cadets that are ranklocked on the sheet but aren't in game
 const GAME_CADET_PATH = join(INPUT_FOLDER, INPUT_FILE);
+
+const CADET_PATTERN = /([A-z0-9_]+) : (.+)/;
 
 export default async function main() {
   RanklockExpired.length = 0;
@@ -85,12 +86,25 @@ async function GetGameCadets(): Promise<string[] | undefined> {
   }
 
   // Return data
-  const data = await readFile(join(INPUT_FOLDER, INPUT_FILE), "utf-8");
-  if (data === "") {
-    return [];
-  } else {
-    return (await JSON.parse(data)) as string[];
+  const raw = await GetRawGameCadetData();
+  const cadets: string[] = [];
+  for (const line of raw) {
+    const PatternResult = CADET_PATTERN.exec(line);
+    if (!PatternResult) continue;
+
+    const rank = PatternResult[2];
+    if (rank !== "Member") continue;
+
+    cadets.push(PatternResult[1]);
   }
+
+  return cadets;
+}
+
+async function GetRawGameCadetData() {
+  const data = await readFile(join(INPUT_FOLDER, INPUT_FILE), "utf-8");
+
+  return data.split("\r\n");
 }
 
 async function GameCadetsExists() {
@@ -118,7 +132,6 @@ function CompareCadets(
     // Ranklocked in game but no data found in sheet
     if (!sheetData) {
       GameCadets.splice(i);
-      RanklockNotFound.push(username);
       continue;
     }
 
@@ -144,12 +157,6 @@ function CompareCadets(
 function Display() {
   console.warn("THESE CADETS HAVE THEIR RANKLOCK EXPIRED!\nUNRANK THEM!");
   RanklockExpired.forEach((x) => console.log(x));
-  console.log("\n");
-
-  console.warn(
-    "THESE CADETS ARE RANKED IN GAME BUT NOT ON THE SHEET!\nUNRANK THEM!",
-  );
-  RanklockNotFound.forEach((x) => console.log(x));
   console.log("\n");
 
   console.warn(
