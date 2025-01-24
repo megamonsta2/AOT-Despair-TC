@@ -18,6 +18,9 @@ const RanklockMissing: string[] = []; // Cadets that are ranklocked on the sheet
 const GAME_CADET_PATH = join(INPUT_FOLDER, INPUT_FILE);
 
 export default async function main() {
+  RanklockExpired.length = 0;
+  RanklockMissing.length = 0;
+
   const SheetCadets = await GetSheetCadets();
   if (!SheetCadets) return;
 
