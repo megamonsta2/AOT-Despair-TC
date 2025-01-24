@@ -8,7 +8,7 @@ export const INPUT_FOLDER = `${MAIN_INPUT_FOLDER}/AwaitingTesting`;
 export const PARSED_FOLDER = MAIN_PARSED_FOLDER;
 
 export const INPUT_FILES: { [key in PlayerField]: string } = {
-  Username: "Usernames.json",
+  Username: "Usernames.txt",
   Knowledge: "Knowledge.json",
   BonusPoints: "BonusPoints.json",
 

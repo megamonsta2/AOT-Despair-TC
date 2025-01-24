@@ -22,10 +22,8 @@ import { AddError, DisplayErrors, Errored } from "../utils/Error.js";
 THIS IS THE DATA FORMAT FOR EACH INPUT
 
 USERNAMES
-[
-    "USERNAME",
-    "USERNAME"
-]
+USERNAME
+USERNAME
 
 KNOWLEDGE
 [
@@ -60,6 +58,7 @@ type KnowledgeInput = [string, string][];
 const ValidPlayers: Map<string, Player> = new Map();
 const InvalidPlayers: Map<string, Player> = new Map();
 
+const UsernamePattern = /([A-z0-9_]+) : (.+)/;
 const KnowledgeScorePattern = /([0-9]+) \/ [0-9]+/;
 const DummiesPattern = /- ([A-z0-9_]+) \| x([0-9]+) kills/;
 const ObbyPattern = /- ([A-z0-9_]+) \| ([0-9]+):([0-9]+):[0-9]+/;
@@ -124,11 +123,27 @@ function ResetPlayers() {
 // Usernames
 async function ParseUsernames() {
   const Promises: Promise<void>[] = [];
-  const raw: DefaultInput = await ReadInputFile(INPUT_FILES.Username);
+  const raw: DefaultInput = (
+    await readFile(join(INPUT_FOLDER, INPUT_FILES.Username), "utf-8")
+  ).split("\r\n");
 
-  for (const username of raw) {
+  for (const line of raw) {
     Promises.push(
       new Promise(function (resolve) {
+        const PatternResult = UsernamePattern.exec(line);
+        if (!PatternResult || PatternResult[0] !== line) {
+          resolve();
+          return;
+        }
+
+        const username = PatternResult[1];
+        const rank = PatternResult[2];
+        console.log(username, rank);
+        if (rank !== "Awaiting Testing") {
+          resolve();
+          return;
+        }
+
         const NewPlayer = new Player(username);
         const key = GetPlayerKey(username);
 
